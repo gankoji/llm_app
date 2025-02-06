@@ -1,20 +1,38 @@
 import express from 'express';
 import { ChromaClient } from 'chromadb';
+import { LLMService, PromptSchema } from '../services/llm';
 
 const router = express.Router();
 const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL });
 
+// Initialize LLM service with environment variables
+const llmService = new LLMService({
+  provider: 'anthropic',
+  model: process.env.MODEL_NAME || 'claude-3-sonnet-20240229',
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+  maxTokens: 1024,
+  temperature: 0.7
+});
+
 router.post('/', async (req, res) => {
   try {
-    // Basic validation
-    if (!req.body) {
-      return res.status(400).json({ error: 'Request body is required' });
-    }
+    // Validate request body against schema
+    const promptRequest = PromptSchema.parse(req.body);
 
-    // TODO: Implement prompt handling logic
-    res.json({ message: 'Prompt endpoint ready for implementation' });
+    // Generate response using LLM service
+    const response = await llmService.generateResponse(promptRequest);
+
+    res.json(response);
   } catch (error) {
-    console.error('Error processing prompt:', error);
+    if (error instanceof Error) {
+      console.error('Error processing prompt:', error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({
+          error: 'Invalid request format',
+          details: JSON.stringify(error),
+        });
+      }
+    }
     res.status(500).json({ error: 'Internal server error' });
   }
 });
