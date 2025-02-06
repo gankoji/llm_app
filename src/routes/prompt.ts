@@ -1,6 +1,7 @@
 import express from 'express';
 import { ChromaClient } from 'chromadb';
-import { LLMService, PromptSchema } from '../services/llm';
+import { LLMService } from '../services/llm';
+import { PromptSchema } from '../services/llm.types';
 
 const router = express.Router();
 const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL });

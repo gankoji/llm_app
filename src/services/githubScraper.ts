@@ -1,6 +1,6 @@
 // githubScraper.ts
 import { SimpleGit, simpleGit } from 'simple-git';
-import { ChromaClient } from 'chromadb';
+import { ChromaClient, DefaultEmbeddingFunction } from 'chromadb';
 import validUrl from 'valid-url';
 import path from 'path';
 import * as fs from 'fs/promises';
@@ -12,19 +12,28 @@ async function scrapeGithubRepo(repoUrl: string): Promise<void> {
   try {
     // 0. Get ChromaDB collection
     const collection = await chromaClient.getOrCreateCollection({
-        name: 'default'
+        name: 'default',
+        embeddingFunction: new DefaultEmbeddingFunction(),
     });
 
     // 1. Validate URL
-    if (!validUrl.isUri(repoUrl)) {
-      throw new Error('Invalid repository URL');
-    }
+    // if (!validUrl.isUri(repoUrl)) {
+    //   throw new Error('Invalid repository URL');
+    // } else {
+    //   console.log(repoUrl);
+    // }
 
     // 2. Extract repo name (for local directory)
-    const repoName = repoUrl.split('/').slice(-2).join('-'); // Basic extraction, adjust as needed
+    const repoName = '../tmp/app/temp2';// repoUrl.split('/').slice(-2).join('-'); // Basic extraction, adjust as needed
 
     // 3. Clone the repository
-    const git: SimpleGit = simpleGit();
+    const git: SimpleGit = simpleGit({
+      baseDir: process.cwd(),
+      binary: 'git',
+      config: [
+        'core.sshCommand=ssh -i /root/.ssh/id_rsa -o IdentitiesOnly=yes -o StrictHostKeyChecking=no'
+      ]
+    });
     const repoPath = path.join(process.cwd(), repoName); // Local path to the cloned repository
     await git.clone(repoUrl, repoName);
 
@@ -44,7 +53,7 @@ async function scrapeGithubRepo(repoUrl: string): Promise<void> {
       });
     }
 
-    await git.rm(['-rf', repoPath]);
+    await fs.rm(repoPath, { recursive: true });
 
   } catch (error) {
     if (error instanceof Error) {

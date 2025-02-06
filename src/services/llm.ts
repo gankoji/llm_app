@@ -1,34 +1,18 @@
 import { Anthropic } from '@anthropic-ai/sdk';
-import { z } from 'zod';
+import { ChromaClient, DefaultEmbeddingFunction } from 'chromadb';
+import { ModelConfig, ModelConfigSchema, PromptRequest } from './llm.types';
 
-// Configuration schema
-export const ModelConfigSchema = z.object({
-  provider: z.enum(['anthropic']).default('anthropic'),
-  model: z.string().default('claude-3-sonnet-20240229'),
-  apiKey: z.string(),
-  maxTokens: z.number().optional().default(1024),
-  temperature: z.number().optional().default(0.7),
-});
-
-export type ModelConfig = z.infer<typeof ModelConfigSchema>;
-
-// Prompt schema
-export const PromptSchema = z.object({
-  messages: z.array(z.object({
-    role: z.enum(['user', 'assistant']),
-    content: z.string(),
-  })),
-  config: ModelConfigSchema.partial().optional(),
-});
-
-export type PromptRequest = z.infer<typeof PromptSchema>;
+const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL }); // Chroma client
+const NUM_RESULTS = 3 // Number of results to retrieve from ChromaDB
 
 export class LLMService {
   private anthropic: Anthropic;
   private defaultConfig: ModelConfig;
+  private embeddingFunction: DefaultEmbeddingFunction;
 
   constructor(config: ModelConfig) {
     this.defaultConfig = ModelConfigSchema.parse(config);
+    this.embeddingFunction = new DefaultEmbeddingFunction();
     this.anthropic = new Anthropic({
       apiKey: this.defaultConfig.apiKey,
     });
@@ -41,11 +25,24 @@ export class LLMService {
     };
 
     try {
+      const collection = await chromaClient.getCollection({
+        name: 'default',
+        embeddingFunction: this.embeddingFunction,
+      });
+      const results = await collection.query({
+        queryTexts: [promptRequest.messages[0].content], // Use the user's prompt as the query
+        nResults: NUM_RESULTS,
+      });
+
+      const context = results.documents[0].map((doc, index) => `Result ${index + 1}:\n${doc}\n`).join('');
+
+      const modifiedPrompt = `Context:${context}\nUserPrompt: ${promptRequest.messages[0].content}`;
+
       const response = await this.anthropic.messages.create({
         model: config.model,
         max_tokens: config.maxTokens,
         temperature: config.temperature,
-        messages: promptRequest.messages,
+        messages: [{ role: 'user', content: modifiedPrompt}],
       });
 
       return {

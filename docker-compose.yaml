@@ -8,6 +8,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - MODEL_PROVIDER=anthropic
       - MODEL_NAME=claude-3-sonnet-20240229
+    volumes:
+      - app_data:/tmp/app # Mount the volume
     depends_on:
       - chromadb
 
@@ -20,4 +22,6 @@ services:
 
 volumes:
   chroma_data:
+    driver: local
+  app_data: # Declare the new volume
     driver: local
