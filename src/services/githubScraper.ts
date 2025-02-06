@@ -10,18 +10,11 @@ const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL });
 
 async function scrapeGithubRepo(repoUrl: string): Promise<void> {
   try {
-    // 0. Get ChromaDB collection
+    // 1. Get ChromaDB collection
     const collection = await chromaClient.getOrCreateCollection({
         name: 'default',
         embeddingFunction: new DefaultEmbeddingFunction(),
     });
-
-    // 1. Validate URL
-    // if (!validUrl.isUri(repoUrl)) {
-    //   throw new Error('Invalid repository URL');
-    // } else {
-    //   console.log(repoUrl);
-    // }
 
     // 2. Extract repo name (for local directory)
     const repoName = '../tmp/app/temp2';// repoUrl.split('/').slice(-2).join('-'); // Basic extraction, adjust as needed

@@ -1,0 +1,104 @@
+# Contributing to RAG Application
+
+First off, thank you for considering contributing to this project! While this is primarily a demonstration of RAG capabilities using ChromaDB and Claude, contributions are welcome. Just remember that review times may vary as this is a side project.
+
+## Code of Conduct
+
+### The Short Version
+
+Don't be a jerk. Be respectful of others' viewpoints and experiences.
+
+### The Longer Version
+
+- Be welcoming and inclusive
+- Be respectful of differing opinions and experiences
+- Accept constructive criticism gracefully
+- Focus on what's best for the community
+- Show empathy towards other community members
+
+## How Can I Contribute?
+
+### Reporting Bugs
+
+Before creating bug reports, please check the existing issues as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+
+- Use a clear and descriptive title
+- Describe the exact steps which reproduce the problem
+- Provide specific examples to demonstrate the steps
+- Describe the behavior you observed after following the steps
+- Explain which behavior you expected to see instead and why
+- Include logs if relevant
+
+### Suggesting Enhancements
+
+Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
+
+- A clear and descriptive title
+- A step-by-step description of the suggested enhancement
+- Any possible drawbacks
+- Why you believe this enhancement would be useful
+
+### Pull Requests
+
+1. Fork the repo and create your branch from `main`
+2. If you've added code that should be tested, add tests
+3. Ensure the test suite passes (when we have one 😉)
+4. Make sure your code lints
+5. Issue the pull request
+
+## Styleguides
+
+### Git Commit Messages
+
+- Use the present tense ("Add feature" not "Added feature")
+- Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+- Limit the first line to 72 characters or less
+- Reference issues and pull requests liberally after the first line
+
+### TypeScript Styleguide
+
+- Use strict typing where possible
+- Document complex functions with TSDoc comments
+- Follow existing patterns in the codebase
+- Use meaningful variable names
+- Keep functions focused and small
+
+### Documentation Styleguide
+
+- Use [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+- Reference function parameters and types in backticks
+- Include code examples where relevant
+
+## Project Structure
+
+Please maintain the existing project structure:
+
+src/
+├── routes/ # Express routes
+├── services/ # Business logic
+├── types/ # Type definitions
+└── index.ts # Application entry point
+
+## Pull Request Process
+
+1. Update the README.md with details of changes to the interface, if applicable
+2. Update any relevant documentation
+3. The PR will be merged once you have the sign-off of the maintainer
+
+## Note on Review Times
+
+This is a side project, so while pull requests are welcome, please understand that review times may vary significantly. Don't expect immediate responses or any specific SLA for reviews.
+
+## Questions?
+
+Feel free to create an issue labeled as 'question' if you have any queries about contributing.
+
+## Recognition
+
+Contributors who add significant value to the project will be recognized in the README.md file.
+
+Remember: All contributions, big or small, are valued. Even if it's fixing a typo in documentation or improving error messages, every contribution helps make this project better.
+
+---
+
+This document was inspired by various open source contribution guidelines but simplified for our needs. Feel free to suggest improvements to these guidelines via a pull request.
