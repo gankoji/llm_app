@@ -8,7 +8,7 @@ const AppContainer = styled.div`
 `;
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: string;
   content: string;
 }
 
@@ -19,7 +19,7 @@ interface Conversation {
   messages: Message[];
 }
 
-export const App: React.FC = () => {
+const App: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   
@@ -60,7 +60,7 @@ export const App: React.FC = () => {
         if (conv.id === activeConversationId) {
           return {
             ...conv,
-            messages: [...conv.messages, 
+            messages: [...conv.messages,
               { role: 'user', content },
               { role: 'assistant', content: data.response }
             ],
@@ -92,3 +92,5 @@ export const App: React.FC = () => {
     </AppContainer>
   );
 };
+
+export default App;

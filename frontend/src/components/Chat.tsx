@@ -28,7 +28,7 @@ const Input = styled.input`
 `;
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: string;
   content: string;
 }
 
@@ -81,7 +81,7 @@ export const Chat: React.FC<ChatProps> = ({ messages, onSendMessage }) => {
   );
 };
 
-const MessageBubble = styled.div<{ role: 'user' | 'assistant' }>`
+const MessageBubble = styled.div<{ role: string }>`
   max-width: 70%;
   margin: 8px;
   padding: 12px;

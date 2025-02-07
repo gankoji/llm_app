@@ -1,14 +1,14 @@
 services:
   frontend:
-    build: 
+    build:
       context: ./frontend
     ports:
-      - "80:80"
+      - "8080:80"
     depends_on:
       - backend
 
   backend:
-    build: 
+    build:
       context: ./backend
     ports:
       - "3000:3000"
@@ -40,7 +40,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
 volumes:
   chroma_data:
