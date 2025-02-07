@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 const AppContainer = styled.div`
   display: flex;
+  width: 100%;
+  height: 100vh;
 `;
 
 interface Message {
@@ -24,13 +26,16 @@ const App: React.FC = () => {
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   
   useEffect(() => {
-    // Load conversations on mount
     fetchConversations();
   }, []);
 
   const fetchConversations = async () => {
     try {
+      // Using absolute path to ensure proper routing
       const response = await fetch('/api/conversations');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setConversations(data);
       if (data.length > 0 && !activeConversationId) {
@@ -53,6 +58,10 @@ const App: React.FC = () => {
         }),
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       // Update conversation with new messages
       // This is simplified - you'll need to handle the actual response format
@@ -69,26 +78,26 @@ const App: React.FC = () => {
         return conv;
       });
       setConversations(updatedConversations);
+      setConversations(data);
+      if (data.length > 0 && !activeConversationId) {
+        setActiveConversationId(data[0].id);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
     }
   };
 
-  const activeConversation = conversations.find(c => c.id === activeConversationId);
-
   return (
     <AppContainer>
-      <Sidebar
+      <Sidebar 
         conversations={conversations}
         activeConversation={activeConversationId}
         onSelectConversation={setActiveConversationId}
       />
-      {activeConversation && (
-        <Chat
-          messages={activeConversation.messages}
-          onSendMessage={sendMessage}
-        />
-      )}
+      <Chat 
+        messages={[]} 
+        onSendMessage={sendMessage}
+      />
     </AppContainer>
   );
 };

@@ -4,11 +4,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 8080,
     proxy: {
       '/api': {
-        target: 'http://backend:3000',
+        target: 'http://backend:3000',  // This is correct for docker internal networking
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '') // Remove /api prefix when forwarding
       },
     },
   },
