@@ -7,7 +7,13 @@ const pool = new Pool({
 });
 
 const router = express.Router();
-const llmService = new LLMService(/* config */);
+const llmService = new LLMService({
+  provider: 'anthropic',
+  model: process.env.MODEL_NAME || 'claude-3-sonnet-20240229',
+  apiKey: process.env.ANTHROPIC_API_KEY!,
+  maxTokens: 1024,
+  temperature: 0.7
+});
 
 // Get all conversations
 router.get('/', async (req, res) => {
