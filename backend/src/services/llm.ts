@@ -2,9 +2,8 @@ import { Anthropic } from '@anthropic-ai/sdk';
 import { ChromaClient, DefaultEmbeddingFunction } from 'chromadb';
 import { ModelConfig, ModelConfigSchema, PromptRequest } from './llm.types';
 
-const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL }); // Chroma client
-const NUM_RESULTS = 3 // Number of results to retrieve from ChromaDB
-
+const chromaClient = new ChromaClient({ path: process.env.CHROMA_URL });
+const NUM_RESULTS = 3
 export class LLMService {
   private anthropic: Anthropic;
   private defaultConfig: ModelConfig;
@@ -30,7 +29,7 @@ export class LLMService {
         embeddingFunction: this.embeddingFunction,
       });
       const results = await collection.query({
-        queryTexts: [promptRequest.messages[0].content], // Use the user's prompt as the query
+        queryTexts: [promptRequest.messages[0].content],
         nResults: NUM_RESULTS,
       });
 
@@ -56,6 +55,30 @@ export class LLMService {
     } catch (error) {
       console.error('Error generating response:', error);
       throw error;
+    }
+  }
+
+  async generateTitle(messages: Array<{role: string, content: string}>): Promise<string> {
+    try {
+      const context = messages
+        .slice(0, 2)
+        .map(m => `${m.role}: ${m.content}`)
+        .join('\n');
+
+      const response = await this.anthropic.messages.create({
+        model: this.defaultConfig.model,
+        max_tokens: 50,
+        temperature: 0.7,
+        messages: [{
+          role: 'user',
+          content: `Based on this conversation, generate a concise title (max 6 words):\n${context}`
+        }],
+      });
+
+      return response.content[0].text.trim();
+    } catch (error) {
+      console.error('Error generating title:', error);
+      return 'New Conversation';
     }
   }
 }

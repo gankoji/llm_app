@@ -1,6 +1,6 @@
 // src/routes/scrape.ts
 import express from 'express';
-import scrapeGithubRepo from '../services/githubScraper'; // Import the scraping function
+import scrapeGithubRepo from '../../services/githubScraper'; // Import the scraping function
 
 const router = express.Router();
 
