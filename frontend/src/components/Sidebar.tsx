@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -18,10 +18,10 @@ const ConversationItem = styled.div<{ active: boolean }>`
   margin-bottom: 8px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: ${props => props.active ? '#007bff' : 'transparent'};
-  color: ${props => props.active ? 'white' : 'black'};
+  background-color: ${(props) => (props.active ? "#007bff" : "transparent")};
+  color: ${(props) => (props.active ? "white" : "black")};
   &:hover {
-    background-color: ${props => props.active ? '#007bff' : '#e9ecef'};
+    background-color: ${(props) => (props.active ? "#007bff" : "#e9ecef")};
   }
 `;
 
@@ -32,13 +32,13 @@ interface Conversation {
 }
 
 interface SidebarProps {
-  conversations: Conversation[];
+  conversations?: Conversation[]; // Make conversations optional
   activeConversation: string | null;
   onSelectConversation: (id: string) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  conversations,
+  conversations = [], // Default to empty array
   activeConversation,
   onSelectConversation,
 }) => {
@@ -51,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => onSelectConversation(conv.id)}
         >
           {conv.title}
-          <div style={{ fontSize: '0.8em', color: '#6c757d' }}>
+          <div style={{ fontSize: "0.8em", color: "#6c757d" }}>
             {new Date(conv.timestamp).toLocaleDateString()}
           </div>
         </ConversationItem>
